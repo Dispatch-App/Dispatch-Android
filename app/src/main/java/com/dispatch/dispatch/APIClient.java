@@ -55,9 +55,17 @@ public class APIClient {
                             // Grab every crime
                             JSONObject crimeJSON = crimeArray.getJSONObject(i);
 
+                            // Geo point (parse datatype) of the crime
+                            JSONObject geoPoint = crimeJSON.getJSONObject(Config.JSONConfig.KEY_LOCATION);
+
                             // Convert the crime json into a crime object
                             Crime crime = new Crime();
 
+                            // Extract the latitude/longitude from the geopoint
+                            crime.setLatitude(geoPoint.getDouble(Config.JSONConfig.KEY_LATITUDE));
+                            crime.setLongitude(geoPoint.getDouble(Config.JSONConfig.KEY_LONGITUDE));
+
+                            // Date of the crime (timestamp of when parse object was created)
                             crime.setDate(crimeJSON.getString(Config.JSONConfig.KEY_DATE));
 
                             // Set the type of the crime in regards to the enum
