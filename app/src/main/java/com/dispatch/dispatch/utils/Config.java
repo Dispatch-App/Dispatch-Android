@@ -1,4 +1,4 @@
-package com.dispatch.dispatch;
+package com.dispatch.dispatch.utils;
 
 /**
  * Created by Daniel on 8/8/2015.
@@ -18,7 +18,8 @@ public final class Config {
         public static final String KEY_CODE = "code";
         public static final String KEY_SUCCESS = "success";
         public static final String KEY_CRIMES = "crimes";
-        public static final String KEY_DATE = "createdAt";
+        public static final String KEY_DATE = "date";
+        public static final String KEY_TIME_STAMP = "timestamp";
         public static final String KEY_LOCATION = "location";
     }
 
