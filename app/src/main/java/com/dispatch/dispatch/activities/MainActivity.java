@@ -1,14 +1,13 @@
-package com.dispatch.dispatch;
+package com.dispatch.dispatch.activities;
 
 import android.location.Location;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
-import java.util.logging.Logger;
+import com.dispatch.dispatch.R;
+import com.dispatch.dispatch.utils.APIClient;
 
 
 public class MainActivity extends ActionBarActivity {

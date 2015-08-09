@@ -1,4 +1,4 @@
-package com.dispatch.dispatch;
+package com.dispatch.dispatch.utils;
 
 /**
  * Created by Daniel on 8/8/2015.

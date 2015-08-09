@@ -1,4 +1,4 @@
-package com.dispatch.dispatch;
+package com.dispatch.dispatch.models;
 
 import java.util.Date;
 

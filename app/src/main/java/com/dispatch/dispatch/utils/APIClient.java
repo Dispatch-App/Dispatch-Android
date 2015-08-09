@@ -1,17 +1,14 @@
-package com.dispatch.dispatch;
+package com.dispatch.dispatch.utils;
 
 import android.location.Location;
 import android.os.AsyncTask;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import com.dispatch.dispatch.models.Crime;
+
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
