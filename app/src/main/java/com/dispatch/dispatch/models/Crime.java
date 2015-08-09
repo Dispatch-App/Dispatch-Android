@@ -1,4 +1,4 @@
-package com.dispatch.dispatch;
+package com.dispatch.dispatch.models;
 
 import java.util.Date;
 
@@ -7,7 +7,7 @@ import java.util.Date;
  */
 public class Crime {
     private Type type;
-    private String date;
+    private long timestamp;
     private double latitude;
     private double longitude;
 
@@ -27,12 +27,12 @@ public class Crime {
         this.longitude = longitude;
     }
 
-    public String getDate() {
-        return date;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public long getTimestamp() {
+        return timestamp;
     }
 
     public void setType(Type type) {
@@ -45,7 +45,7 @@ public class Crime {
 
     @Override
     public String toString() {
-        return "Type: " + type + " Date: " + date + " Latitude: " + latitude + " Longitude: " + longitude;
+        return "Type: " + type + " Timestamp: " + timestamp + " Latitude: " + latitude + " Longitude: " + longitude;
     }
 
     public static enum Type {
