@@ -100,15 +100,7 @@ public class APIClient {
     }
 
     private JSONObject getResponse(HttpURLConnection connection) throws  Exception {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder response = new StringBuilder();
-        String temp;
-
-        while((temp = bufferedReader.readLine()) != null) {
-            response.append(temp);
-        }
-
-        return new JSONObject(response.toString());
+        return new JSONObject(Utils.readFullySync(connection.getInputStream()));
     }
 
     private JSONObject fireGetRequest(String url, Map<String, Object> params) throws Exception {
@@ -139,6 +131,10 @@ public class APIClient {
 
         // Get the response
         return getResponse(connection);
+    }
+
+    private void useBasicAuth(HttpURLConnection connection) {
+        connection.setRequestProperty("Authentication", "Basic " );
     }
 
     private HttpURLConnection connect(String url) throws Exception {
