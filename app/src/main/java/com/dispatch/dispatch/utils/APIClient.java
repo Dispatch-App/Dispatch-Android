@@ -2,9 +2,12 @@ package com.dispatch.dispatch.utils;
 
 import android.location.Location;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.dispatch.dispatch.models.Crime;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -15,15 +18,56 @@ import java.util.Map;
 
 import org.json.*;
 
-
 /**
  * Created by Daniel on 8/8/2015.
  */
 public class APIClient {
+    private static final String TAG = "utils";
     private Exception exception;
 
-    public void addCrime(Crime crime, APICallback callback) {
+    public void addCrime(final Crime crime, final APICallback callback) {
+        new AsyncTask<Void, Void, Void>() {
 
+            @Override
+            protected Void doInBackground(Void... params) {
+                JSONObject reqBody = new JSONObject();
+
+                try {
+                    // Build a json object from the crime
+                    reqBody.put(Config.JSONConfig.KEY_LATITUDE, crime.getLatitude());
+                    reqBody.put(Config.JSONConfig.KEY_LONGITUDE, crime.getLongitude());
+                    reqBody.put(Config.JSONConfig.KEY_TYPE, crime.getType());
+
+                    // Fire the post request
+                    JSONObject response = firePostRequest(Config.APIConfig.ENDPOINT_ADD_CRIME, reqBody);
+
+                    if(response.getBoolean(Config.JSONConfig.KEY_SUCCESS)) {
+                        // Successful in adding the crime
+                        return null;
+                    }
+
+                } catch(Exception e) {
+                    exception = e;
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+
+                if(exception == null) {
+                    // Success
+                    callback.success(null);
+                }
+                else {
+                    // Failure
+                    callback.error(exception);
+                }
+            }
+
+        }.execute();
     }
 
     public void getCrimes(final Location location, final float range, final APICallback callback) {
@@ -63,7 +107,7 @@ public class APIClient {
                             crime.setLongitude(geoPoint.getDouble(Config.JSONConfig.KEY_LONGITUDE));
 
                             // Date of the crime (timestamp of when parse object was created)
-                            crime.setDate(crimeJSON.getString(Config.JSONConfig.KEY_DATE));
+                            crime.setTimestamp(crimeJSON.getLong(Config.JSONConfig.KEY_TIME_STAMP));
 
                             // Set the type of the crime in regards to the enum
                             crime.setType(Crime.Type.valueOf(crimeJSON.getString(Config.JSONConfig.KEY_TYPE)));
@@ -96,8 +140,24 @@ public class APIClient {
         }.execute();
     }
 
-    private JSONObject getResponse(HttpURLConnection connection) throws  Exception {
+    private JSONObject getResponse(HttpURLConnection connection) throws JSONException, IOException {
         return new JSONObject(Utils.readFullySync(connection.getInputStream()));
+    }
+
+    private JSONObject firePostRequest(String url, JSONObject jsonObject) throws IOException, JSONException {
+        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        connection.setDoOutput(true);
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+
+        OutputStream outputStream = connection.getOutputStream();
+        outputStream.write(jsonObject.toString().getBytes());
+        outputStream.flush();
+        outputStream.close();
+
+        Log.d(TAG, jsonObject.toString());
+
+        return getResponse(connection);
     }
 
     private JSONObject fireGetRequest(String url, Map<String, Object> params) throws Exception {
@@ -131,13 +191,16 @@ public class APIClient {
     }
 
     private void useBasicAuth(HttpURLConnection connection) {
-        connection.setRequestProperty("Authentication", "Basic " );
+        //connection.setRequestProperty("Authentication", "Basic " );
     }
 
     private HttpURLConnection connect(String url) throws Exception {
         return (HttpURLConnection) new URL(url).openConnection();
     }
 
+    /**
+     * Used as a listener and is notified under conditions of success or error
+     */
     public static interface APICallback {
         void success(Object o);
         void error(Exception e);
