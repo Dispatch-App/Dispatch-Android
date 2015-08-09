@@ -55,9 +55,17 @@ public class APIClient {
                             // Grab every crime
                             JSONObject crimeJSON = crimeArray.getJSONObject(i);
 
+                            // Geo point (parse datatype) of the crime
+                            JSONObject geoPoint = crimeJSON.getJSONObject(Config.JSONConfig.KEY_LOCATION);
+
                             // Convert the crime json into a crime object
                             Crime crime = new Crime();
 
+                            // Extract the latitude/longitude from the geopoint
+                            crime.setLatitude(geoPoint.getDouble(Config.JSONConfig.KEY_LATITUDE));
+                            crime.setLongitude(geoPoint.getDouble(Config.JSONConfig.KEY_LONGITUDE));
+
+                            // Date of the crime (timestamp of when parse object was created)
                             crime.setDate(crimeJSON.getString(Config.JSONConfig.KEY_DATE));
 
                             // Set the type of the crime in regards to the enum
@@ -92,15 +100,7 @@ public class APIClient {
     }
 
     private JSONObject getResponse(HttpURLConnection connection) throws  Exception {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder response = new StringBuilder();
-        String temp;
-
-        while((temp = bufferedReader.readLine()) != null) {
-            response.append(temp);
-        }
-
-        return new JSONObject(response.toString());
+        return new JSONObject(Utils.readFullySync(connection.getInputStream()));
     }
 
     private JSONObject fireGetRequest(String url, Map<String, Object> params) throws Exception {
@@ -131,6 +131,10 @@ public class APIClient {
 
         // Get the response
         return getResponse(connection);
+    }
+
+    private void useBasicAuth(HttpURLConnection connection) {
+        connection.setRequestProperty("Authentication", "Basic " );
     }
 
     private HttpURLConnection connect(String url) throws Exception {
