@@ -1,4 +1,4 @@
-package com.dispatch.apiclient;
+package com.dispatch.shared;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
