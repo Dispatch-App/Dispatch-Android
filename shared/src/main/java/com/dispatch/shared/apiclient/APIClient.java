@@ -1,13 +1,10 @@
 package com.dispatch.shared.apiclient;
 
-
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.dispatch.shared.models.Crime;
-
-import org.json.*;
+import com.dispatch.dispatch.models.Crime;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,6 +15,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.json.*;
 
 /**
  * Created by Daniel on 8/8/2015.
